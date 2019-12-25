@@ -1,0 +1,32 @@
+{:edge.kick/config
+ {:kick.builder/target #profile {:dev "target/dev"
+                                 :prod "target/prod"}
+  :kick/figwheel-main {:builds [{:id "app"
+                                 :main dijonkitchen.but-why.frontend.main
+                                 :output-to "public/frontend.js"
+                                 :output-dir "public/frontend.out"
+                                 :asset-path "/frontend.out"
+                                 :optimizations #profile {:dev :none
+                                                          :prod :advanced}}]
+                       :figwheel-config
+                       {:ring-server-options
+                        {:port 5757}}}}
+
+ :ig.system/base
+ {:dijonkitchen.but-why.core/string "Hello, but-why!"
+  [:edge.yada.ig/classpath-name :dijonkitchen.but-why/index] {:name "index.html"}
+  [:edge.yada.ig/resources :dijonkitchen.but-why/assets] {:path "public"}
+  :edge.yada.ig/listener {:handler #ig/ref :edge.bidi.ig/vhost
+                          :port 9393}
+  :edge.bidi.ig/vhost [["http://localhost:9393"
+                        [""
+                         [["/" #ig/ref [:dijonkitchen.but-why/index :edge.yada.ig/classpath-name]]
+                          ["/hello" #ig/ref :dijonkitchen.but-why.core/string]
+                          ["" #ig/ref [:dijonkitchen.but-why/assets :edge.yada.ig/resources]]]]]]}
+
+ :ig.system/dev
+ {:edge.kick/builder #ref [:edge.kick/config]}
+
+ :ig/system #profile {:dev #merge [#ref [:ig.system/base]
+                                   #ref [:ig.system/dev]]
+                      :default #ref [:ig.system/base]}}
