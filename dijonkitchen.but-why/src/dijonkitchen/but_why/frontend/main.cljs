@@ -26,11 +26,11 @@
 (def final-question
   "But why?")
 
-(defn- label
+(defn- question
   ([]
-   (label 0))
-  ([label-number]
-   (if (zero? label-number)
+   (question 0))
+  ([question-number]
+   (if (zero? question-number)
      initial-question
      final-question)))
 
@@ -38,7 +38,7 @@
   []
   [:form
    [:label
-    [label (count @answers)]
+    [question (count @answers)]
     [:br]
     [:input {:required true
              :auto-focus true
@@ -50,7 +50,7 @@
 (defn- previous-answer
   [key answer]
   [:p {:key key}
-   [label key]
+   [question key]
    [:br]
    answer])
 
