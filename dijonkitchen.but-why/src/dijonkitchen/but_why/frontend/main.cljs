@@ -4,14 +4,14 @@
 (def answer
   (r/atom nil))
 
+(def answers
+  (r/atom []))
+
 (defn- answer-handler
   [event]
   (reset! answer (-> event
                      .-target
                      .-value)))
-
-(def answers
-  (r/atom []))
 
 (defn- submit-handler
   [event]
@@ -20,11 +20,25 @@
     (swap! answers conj response)
     (reset! answer nil)))
 
+(def initial-question
+  "What do you want to do?")
+
+(def final-question
+  "But why?")
+
+(defn- label
+  ([]
+   (label 0))
+  ([label-number]
+   (if (zero? label-number)
+     initial-question
+     final-question)))
+
 (defn- form
   []
   [:form
    [:label
-    "What do you want to do?"
+    [label (count @answers)]
     [:br]
     [:input {:required true
              :auto-focus true
@@ -36,7 +50,7 @@
 (defn- previous-answer
   [key answer]
   [:p {:key key}
-   "What do you want to do?"
+   [label key]
    [:br]
    answer])
 
