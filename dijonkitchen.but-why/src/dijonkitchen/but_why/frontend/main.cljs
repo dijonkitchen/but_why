@@ -1,5 +1,7 @@
 (ns ^:figwheel-hooks dijonkitchen.but-why.frontend.main
-  (:require [reagent.core :as r]))
+  (:require
+   [clojure.string :as string]
+   [reagent.core :as r]))
 
 (def answer
   (r/atom nil))
@@ -20,37 +22,43 @@
     (swap! answers conj response)
     (reset! answer nil)))
 
-(def initial-question
-  "What do you want to do?")
-
-(def final-question
-  "But why?")
-
 (defn- question
   ([]
    (question 0))
-  ([question-number]
-   (if (zero? question-number)
-     initial-question
-     final-question)))
+  ([question-index]
+   (question question-index nil))
+  ([question-index answers]
+   (cond
+     (zero? question-index)
+     "What do you want to do?"
+
+     (and answers
+          (string/includes? (nth answers
+                                 (dec question-index)) "?"))
+     "Why are you asking a question?"
+
+     :else
+     "But why?")))
 
 (defn- form
   []
-  [:form
-   [:label
-    [question (count @answers)]
-    [:br]
-    [:input {:required true
-             :auto-focus true
-             :value    @answer
-             :on-change answer-handler}]]
-   [:input {:type     :submit
-            :on-click submit-handler}]])
+  (let [answers @answers
+        value   @answer]
+    [:form
+     [:label
+      [question (count answers) answers]
+      [:br]
+      [:input {:required   true
+               :auto-focus true
+               :value      value
+               :on-change  answer-handler}]]
+     [:input {:type     :submit
+              :on-click submit-handler}]]))
 
 (defn- previous-answer
   [key answer]
   [:p {:key key}
-   [question key]
+   [question key @answers]
    [:br]
    answer])
 
