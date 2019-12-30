@@ -23,10 +23,6 @@
     (reset! answer nil)))
 
 (defn- question
-  ([]
-   (question 0))
-  ([question-index]
-   (question question-index nil))
   ([question-index answers]
    (cond
      (zero? question-index)
@@ -56,16 +52,17 @@
               :on-click submit-handler}]]))
 
 (defn- previous-answer
-  [key answer]
+  [key answer answers]
   [:p {:key key}
-   [question key @answers]
+   [question key answers]
    [:br]
    answer])
 
 (defn- previous-answers
   []
-  [:<>
-   (map-indexed previous-answer @answers)])
+  (let [answers @answers]
+    [:<>
+     (map-indexed #(previous-answer %1 %2 answers) answers)]))
 
 (defn- root
   []
