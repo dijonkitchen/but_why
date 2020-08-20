@@ -5,3 +5,7 @@
 ```
 clj -A:prod:prod/build:build:build/once
 ```
+
+== Future enhancements
+* [ ] Use https://clojure.org/guides/spec#_generators[spec generators] for startup ideas
+* [ ] Utilize https://en.wikipedia.org/wiki/Oblique_Strategies[Oblique strategies]
